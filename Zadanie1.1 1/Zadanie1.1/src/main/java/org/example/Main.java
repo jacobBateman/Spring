@@ -1,17 +1,33 @@
 package org.example;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.Objects;
 import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) {
         User me = new User("Jacobsen");
-//        me.getVehilces();
-//        me.rentVehicle("McLaren","W1");
-//        System.out.println("-----------------------");
-//        me.getVehilces();
-//        me.returnVehicle("McLaren","W1");
-//        System.out.println("-----------------------");
-//        me.getVehilces();
+        me.password = DigestUtils.sha256Hex("test");
+
+        boolean isLoggedIn = false;
+
+        while(!isLoggedIn) {
+            System.out.println("Podaj login i hasło: ");
+            Scanner scanner = new Scanner(System.in);
+            String login = scanner.nextLine();
+            String password = scanner.nextLine();
+            if (Objects.equals(me.getUsername(), login) && Objects.equals(me.getPassword(), DigestUtils.sha256Hex(password))) {
+                isLoggedIn = true;
+                System.out.println("Udało się zalogować!");
+            } else {
+                System.out.println("Błędny login lub hasło");
+            }
+        }
+
+
+
 
         System.out.println("1 - sprawdź dostępne pojazdy\n" +
                 "2 - wypożycz \n" +
