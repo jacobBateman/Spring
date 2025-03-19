@@ -1,0 +1,3 @@
+motorcycle;Honda;CBR;2025;35000;1;A1
+car;Ford Mustang;GT;2025;300000;2
+car;McLaren;W1;2024;2000000;
