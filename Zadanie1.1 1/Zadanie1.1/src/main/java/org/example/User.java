@@ -3,15 +3,22 @@ package org.example;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
 
 public class User implements IVehicleRepository{
+    private static ArrayList<User> users = new ArrayList<User>();
     private String username;
     String password;
     String role;
     Vehicle vehicle;
     String path = "vehicles.txt";
+    static UserRepository userRepository = new UserRepository();
     private ArrayList<Vehicle> vehicles = new ArrayList<>();
     private ArrayList<Vehicle> rented = new ArrayList<>();
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public String getUsername() {
         return username;
@@ -31,6 +38,8 @@ public class User implements IVehicleRepository{
 
     public User(String username) {
         this.username = username;
+        users.add(this);
+        userRepository.addUser(this);
         try {
             readFromFile(path);
         } catch (IOException e) {
@@ -124,6 +133,42 @@ public class User implements IVehicleRepository{
             writer.write(v.toCsv());
         }
         writer.close();
+    }
+
+    @Override
+    public void addVehicle(String type, String brand, String model, int year, int price, Optional<String> kategoria) {
+        if (type.equals("car")){
+            Car car = new Car(brand, model, year, price, type);
+            vehicles.add(car);
+        } else {
+            Motorcycle newOne = new Motorcycle(brand, model, year, price,type, kategoria.get());
+            vehicles.add(newOne);
+        }
+        try {
+            save(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void removeVehicle(String brand, String model) {
+        vehicles.removeIf(v -> v.brand.equals(brand) && v.model.equals(model));
+        try {
+            save(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    void listUsers() {
+        for(User u : users){
+            System.out.println(u.username);
+            for (Vehicle v : u.rented){
+                System.out.println(v.toString());
+            }
+        }
     }
 
 }
